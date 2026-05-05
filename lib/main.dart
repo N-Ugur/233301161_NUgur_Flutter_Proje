@@ -1,18 +1,25 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'firebase_options.dart';
+import 'ekranlar/kayitol_ekrani.dart';
 
 // Geliştirici: Necati Uğur
 void main() async {
   // Flutter'ın çizim motoruyla Firebase'in haberleşmesi için gerekli komut
   WidgetsFlutterBinding.ensureInitialized();
   
+  // Çevre değişkenlerini (.env) yüklüyoruz
+  await dotenv.load(fileName: ".env");
+
   // Firebase'i projede ayağa kaldırıyoruz
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,
   );
   
-  runApp(const HalisahaUygulamasi());
+  // Uygulamayı ProviderScope ile sararak Riverpod'u etkinleştiriyoruz
+  runApp(const ProviderScope(child: HalisahaUygulamasi()));
 }
 
 class HalisahaUygulamasi extends StatelessWidget {
@@ -28,13 +35,7 @@ class HalisahaUygulamasi extends StatelessWidget {
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.green),
         useMaterial3: true,
       ),
-      home: const Scaffold(
-        body: Center(
-          child: Text(
-            "Firebase Başarıyla Bağlandı!",
-            style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
-          ),
-        ),
+      home: const KayitEkrani(
       ),
     );
   }
