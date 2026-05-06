@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import '../servisler/auth_servisi.dart';
+import 'giris_ekrani.dart';
 
 // Geliştirici: Necati Uğur
 class KayitEkrani extends StatefulWidget {
@@ -125,6 +126,16 @@ class _KayitEkraniState extends State<KayitEkrani> {
                         child: const Text("Kayıt Ol", style: TextStyle(fontSize: 18)),
                       ),
                     ),
+              const SizedBox(height: 16),
+              TextButton(
+                onPressed: () {
+                  Navigator.pushReplacement(
+                    context,
+                    MaterialPageRoute(builder: (context) => const GirisEkrani()),
+                  );
+                },
+                child: const Text("Hesabın var mı? Giriş Yap"),
+              ),
             ],
           ),
         ),

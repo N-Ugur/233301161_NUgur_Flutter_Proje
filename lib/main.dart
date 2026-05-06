@@ -3,7 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'firebase_options.dart';
-import 'ekranlar/kayitol_ekrani.dart';
+import 'core/auth_gate.dart';
 
 // Geliştirici: Necati Uğur
 void main() async {
@@ -35,8 +35,7 @@ class HalisahaUygulamasi extends StatelessWidget {
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.green),
         useMaterial3: true,
       ),
-      home: const KayitEkrani(
-      ),
+      home: const AuthGate(),
     );
   }
 }

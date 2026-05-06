@@ -47,4 +47,23 @@ class AuthServisi {
     }
     return null;
   }
+
+  // Kullanıcı Giriş Fonksiyonu
+  Future<User?> girisYap(String email, String sifre) async {
+    try {
+      UserCredential userCredential = await _auth.signInWithEmailAndPassword(
+        email: email,
+        password: sifre,
+      );
+      return userCredential.user;
+    } catch (e) {
+      print("Giriş Hatası: $e");
+      return null;
+    }
+  }
+
+  // Kullanıcı Çıkış Fonksiyonu
+  Future<void> cikisYap() async {
+    await _auth.signOut();
+  }
 }
