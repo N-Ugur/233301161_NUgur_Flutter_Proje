@@ -64,7 +64,14 @@ class _KayitEkraniState extends State<KayitEkrani> {
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              const Icon(Icons.sports_soccer, size: 80, color: Colors.green),
+              ClipRRect(
+                borderRadius: BorderRadius.circular(16),
+                child: Image.asset(
+                  'assets/halisaha_logo.jpg',
+                  height: 150,
+                  fit: BoxFit.cover,
+                ),
+              ),
               const SizedBox(height: 20),
               TextField(
                 controller: _adController,
