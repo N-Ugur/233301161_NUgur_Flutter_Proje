@@ -1,13 +1,18 @@
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../servisler/auth_servisi.dart';
 import '../modeller/halisaha_model.dart';
+import '../providers/kullanici_provider.dart';
+import 'saha_ekle_ekrani.dart';
 
-class Anasayfa extends StatelessWidget {
+class Anasayfa extends ConsumerWidget {
   const Anasayfa({super.key});
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
+    final kullaniciAsync = ref.watch(kullaniciProvider);
+
     return Scaffold(
       appBar: AppBar(
         title: const Text("Keşfet"),
@@ -137,6 +142,28 @@ class Anasayfa extends StatelessWidget {
             },
           );
         },
+      ),
+      //Saha Sahibi için Ekleme butonu göster
+      floatingActionButton: kullaniciAsync.when(
+        data: (kullanici) {
+          if (kullanici != null && kullanici.rol == 'Saha Sahibi') {
+            return FloatingActionButton.extended(
+              onPressed: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => const SahaEkleEkrani(),
+                  ),
+                );
+              },
+              icon: const Icon(Icons.add),
+              label: const Text("Saha Ekle"),
+            );
+          }
+          return null;
+        },
+        loading: () => null,
+        error: (_, __) => null,
       ),
     );
   }
