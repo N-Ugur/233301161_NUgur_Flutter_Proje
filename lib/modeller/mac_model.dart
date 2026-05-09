@@ -3,12 +3,11 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 class MacModel {
   final String id;
   final String halisahaId;
-  
-  // NoSQL Denormalizasyon Kuralları Gereği Eklenen Alanlar
+
   final String sahaAdi;
   final String sahaIlce;
   final String sahaFotoUrl;
-  
+
   final String olusturanKullaniciId;
   final DateTime macTarihi;
   final int oyuncuSayisi;
