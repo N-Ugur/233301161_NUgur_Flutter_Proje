@@ -4,7 +4,6 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../ekranlar/anasayfa.dart';
 import '../ekranlar/giris_ekrani.dart';
 
-// Geliştirici: Necati Uğur
 
 // Firebase authStateChanges akışını dinleyen StreamProvider
 final authStateProvider = StreamProvider<User?>((ref) {
@@ -21,10 +20,8 @@ class AuthGate extends ConsumerWidget {
     return authState.when(
       data: (user) {
         if (user != null) {
-          // Kullanıcı giriş yapmış, Anasayfa'ya yönlendir
           return const Anasayfa();
         }
-        // Kullanıcı giriş yapmamış, Giriş ekranına yönlendir
         return const GirisEkrani();
       },
       loading: () => const Scaffold(

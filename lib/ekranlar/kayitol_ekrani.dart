@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import '../servisler/auth_servisi.dart';
 import 'giris_ekrani.dart';
 
-// Geliştirici: Necati Uğur
 class KayitEkrani extends StatefulWidget {
   const KayitEkrani({super.key});
 
@@ -15,7 +14,6 @@ class _KayitEkraniState extends State<KayitEkrani> {
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _sifreController = TextEditingController();
   
-  // Proje kuralına uygun varsayılan 2 rol
   String _secilenRol = 'Oyuncu'; 
 
   final AuthServisi _authServisi = AuthServisi();
@@ -42,7 +40,6 @@ class _KayitEkraniState extends State<KayitEkrani> {
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(content: Text("Kayıt Başarılı! Log kaydı Firestore'a işlendi.")),
       );
-      // TODO: Giriş yapıldıktan sonra uygulamanın ana sayfasına yönlendirme yapılacak
     } else {
       if (!mounted) return;
       ScaffoldMessenger.of(context).showSnackBar(

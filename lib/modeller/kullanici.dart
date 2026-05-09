@@ -1,9 +1,8 @@
-// Geliştirici: Necati Uğur
 class KullaniciModel {
   final String id;
   final String ad;
   final String email;
-  final String rol; // 'Oyuncu' veya 'Saha Sahibi'
+  final String rol;
 
   KullaniciModel({
     required this.id,
@@ -12,7 +11,7 @@ class KullaniciModel {
     required this.rol,
   });
 
-  // Firebase'den gelen veriyi (Map) Dart nesnesine çevirme
+  // Firebase'den gelen veriyi Map'e çevirme
   factory KullaniciModel.fromMap(Map<String, dynamic> data, String documentId) {
     return KullaniciModel(
       id: documentId,
@@ -22,7 +21,7 @@ class KullaniciModel {
     );
   }
 
-  // Dart nesnesini Firebase'e göndermek için Map formatına çevirme
+  //Firebase'e göndermek için Map formatına çevirme
   Map<String, dynamic> toMap() {
     return {
       'ad': ad,

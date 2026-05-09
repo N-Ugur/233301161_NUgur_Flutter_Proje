@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import '../servisler/auth_servisi.dart';
 import 'kayitol_ekrani.dart';
 
-// Geliştirici: Necati Uğur
 class GirisEkrani extends StatefulWidget {
   const GirisEkrani({super.key});
 
@@ -36,7 +35,6 @@ class _GirisEkraniState extends State<GirisEkrani> {
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(content: Text("Giriş Başarılı!")),
       );
-      // AuthGate yönlendirmeyi otomatik yapacak.
     } else {
       if (!mounted) return;
       ScaffoldMessenger.of(context).showSnackBar(

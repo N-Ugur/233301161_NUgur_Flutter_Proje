@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import '../servisler/auth_servisi.dart';
 
-// Geliştirici: Necati Uğur
 class Anasayfa extends StatelessWidget {
   const Anasayfa({super.key});
 
@@ -22,7 +21,7 @@ class Anasayfa extends StatelessWidget {
       ),
       body: const Center(
         child: Text(
-          "Anasayfa'ya Hoş Geldiniz!",
+          "Keşfet Ekranı Hazırlanıyor",
           style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
         ),
       ),
