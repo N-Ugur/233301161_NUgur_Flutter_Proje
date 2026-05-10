@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import '../ekranlar/anasayfa.dart';
+import '../ekranlar/ana_iskelet.dart';
 import '../ekranlar/giris_ekrani.dart';
 
 
@@ -20,7 +20,7 @@ class AuthGate extends ConsumerWidget {
     return authState.when(
       data: (user) {
         if (user != null) {
-          return const Anasayfa();
+          return const AnaIskelet();
         }
         return const GirisEkrani();
       },

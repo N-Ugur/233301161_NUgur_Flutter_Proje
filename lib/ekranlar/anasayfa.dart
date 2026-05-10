@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import '../servisler/auth_servisi.dart';
 import '../modeller/halisaha_model.dart';
 import '../providers/kullanici_provider.dart';
 import 'saha_ekle_ekrani.dart';
@@ -17,14 +16,6 @@ class Anasayfa extends ConsumerWidget {
       appBar: AppBar(
         title: const Text("Keşfet"),
         centerTitle: true,
-        actions: [
-          IconButton(
-            icon: const Icon(Icons.logout),
-            onPressed: () async {
-              await AuthServisi().cikisYap();
-            },
-          ),
-        ],
       ),
       body: StreamBuilder<QuerySnapshot>(
         stream: FirebaseFirestore.instance
