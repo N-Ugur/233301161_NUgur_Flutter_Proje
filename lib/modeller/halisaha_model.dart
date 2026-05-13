@@ -7,6 +7,7 @@ class HalisahaModel {
   final String fotoUrl;
   final double fiyat;
   final DateTime? olusturulmaTarihi;
+  final String? ekleyenKullaniciId;
 
   HalisahaModel({
     required this.id,
@@ -15,6 +16,7 @@ class HalisahaModel {
     required this.fotoUrl,
     required this.fiyat,
     this.olusturulmaTarihi,
+    this.ekleyenKullaniciId,
   });
 
   factory HalisahaModel.fromFirestore(DocumentSnapshot doc) {
@@ -26,6 +28,7 @@ class HalisahaModel {
       fotoUrl: data['fotoUrl'] ?? '',
       fiyat: (data['fiyat'] ?? 0).toDouble(),
       olusturulmaTarihi: (data['olusturulmaTarihi'] as Timestamp?)?.toDate(),
+      ekleyenKullaniciId: data['ekleyenKullaniciId'],
     );
   }
 
@@ -36,6 +39,7 @@ class HalisahaModel {
       'fotoUrl': fotoUrl,
       'fiyat': fiyat,
       'olusturulmaTarihi': FieldValue.serverTimestamp(),
+      'ekleyenKullaniciId': ekleyenKullaniciId,
     };
   }
 }

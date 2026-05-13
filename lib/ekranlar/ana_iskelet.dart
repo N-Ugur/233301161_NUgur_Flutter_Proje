@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'anasayfa.dart';
+import 'maclarim_ekrani.dart';
 import 'profil_ekrani.dart';
 import 'ayarlar_ekrani.dart';
 
@@ -15,6 +16,7 @@ class _AnaIskeletState extends State<AnaIskelet> {
 
   final List<Widget> _sayfalar = [
     const Anasayfa(),
+    const MaclarimEkrani(),
     const ProfilEkrani(),
     const AyarlarEkrani(),
   ];
@@ -35,12 +37,17 @@ class _AnaIskeletState extends State<AnaIskelet> {
       bottomNavigationBar: BottomNavigationBar(
         currentIndex: _seciliSayfaIndex,
         onTap: _sayfaDegistir,
+        type: BottomNavigationBarType.fixed,
         selectedItemColor: Colors.green,
         unselectedItemColor: Colors.grey,
         items: const [
           BottomNavigationBarItem(
             icon: Icon(Icons.explore),
             label: 'Keşfet',
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.sports_soccer),
+            label: 'Maçlarım',
           ),
           BottomNavigationBarItem(
             icon: Icon(Icons.person),

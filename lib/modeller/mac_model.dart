@@ -3,6 +3,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 class MacModel {
   final String id;
   final String halisahaId;
+  final String sahaSahibiId;
 
   final String sahaAdi;
   final String sahaIlce;
@@ -16,6 +17,7 @@ class MacModel {
   MacModel({
     required this.id,
     required this.halisahaId,
+    required this.sahaSahibiId,
     required this.sahaAdi,
     required this.sahaIlce,
     required this.sahaFotoUrl,
@@ -30,6 +32,7 @@ class MacModel {
     return MacModel(
       id: doc.id,
       halisahaId: data['halisahaId'] ?? '',
+      sahaSahibiId: data['sahaSahibiId'] ?? '',
       sahaAdi: data['sahaAdi'] ?? '',
       sahaIlce: data['sahaIlce'] ?? '',
       sahaFotoUrl: data['sahaFotoUrl'] ?? '',
@@ -43,6 +46,7 @@ class MacModel {
   Map<String, dynamic> toMap() {
     return {
       'halisahaId': halisahaId,
+      'sahaSahibiId': sahaSahibiId,
       'sahaAdi': sahaAdi,
       'sahaIlce': sahaIlce,
       'sahaFotoUrl': sahaFotoUrl,

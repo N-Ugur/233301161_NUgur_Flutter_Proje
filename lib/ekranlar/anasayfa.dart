@@ -4,6 +4,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../modeller/halisaha_model.dart';
 import '../providers/kullanici_provider.dart';
 import 'saha_ekle_ekrani.dart';
+import 'saha_detay_ekrani.dart';
 
 class Anasayfa extends ConsumerWidget {
   const Anasayfa({super.key});
@@ -48,7 +49,16 @@ class Anasayfa extends ConsumerWidget {
             itemCount: sahalar.length,
             itemBuilder: (context, index) {
               final saha = sahalar[index];
-              return Card(
+              return InkWell(
+                onTap: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => SahaDetayEkrani(saha: saha),
+                    ),
+                  );
+                },
+                child: Card(
                 elevation: 4,
                 margin: const EdgeInsets.only(bottom: 16),
                 shape: RoundedRectangleBorder(
@@ -129,8 +139,9 @@ class Anasayfa extends ConsumerWidget {
                     ),
                   ],
                 ),
-              );
-            },
+              ),
+            );
+          },
           );
         },
       ),

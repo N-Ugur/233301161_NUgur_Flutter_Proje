@@ -44,6 +44,7 @@ class _SahaEkleEkraniState extends State<SahaEkleEkrani> {
         ilce: _ilceController.text.trim(),
         fotoUrl: _fotoUrlController.text.trim(),
         fiyat: double.tryParse(_fiyatController.text.trim()) ?? 0,
+        ekleyenKullaniciId: user.uid,
       );
 
       //halisahaEkle metodu aynı zamanda logs koleksiyonuna da kayıt atıyor
