@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../providers/kullanici_provider.dart';
@@ -18,6 +19,70 @@ class SahaDetayEkrani extends ConsumerStatefulWidget {
 class _SahaDetayEkraniState extends ConsumerState<SahaDetayEkrani> {
   DateTime? _secilenTarihSaat;
   bool _islemSuruyor = false;
+  bool _sahaSilSuruyor = false;
+
+  Future<void> _sahayiSilOnay(BuildContext context, String kullaniciId) async {
+    final onaylandi = await showDialog<bool>(
+      context: context,
+      builder: (ctx) => AlertDialog(
+        title: const Row(
+          children: [
+            Icon(Icons.warning_amber, color: Colors.red),
+            SizedBox(width: 8),
+            Text('Sahayı Sil', style: TextStyle(color: Colors.red)),
+          ],
+        ),
+        content: Text(
+          '"${widget.saha.ad}" sahasını silmek istediğinize emin misiniz?\n\n'
+          '⚠️ Bu sahaya ait tüm randevular da silinecektir. Bu işlem geri alınamaz!',
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(ctx, false),
+            child: const Text('Vazgeç'),
+          ),
+          ElevatedButton(
+            style: ElevatedButton.styleFrom(
+              backgroundColor: Colors.red,
+              foregroundColor: Colors.white,
+            ),
+            onPressed: () => Navigator.pop(ctx, true),
+            child: const Text('Evet, Sil'),
+          ),
+        ],
+      ),
+    );
+
+    if (onaylandi == true) {
+      setState(() => _sahaSilSuruyor = true);
+      try {
+        await FirestoreServisi().sahaSil(
+          sahaId: widget.saha.id,
+          sahaAdi: widget.saha.ad,
+          siliciKullaniciId: kullaniciId,
+        );
+        if (mounted) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(
+              content: Text('Saha başarıyla silindi.'),
+              backgroundColor: Colors.orange,
+            ),
+          );
+          Navigator.of(context).popUntil((route) => route.isFirst);
+        }
+      } catch (e) {
+        if (mounted) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              content: Text('Saha silinirken hata oluştu: $e'),
+              backgroundColor: Colors.red,
+            ),
+          );
+          setState(() => _sahaSilSuruyor = false);
+        }
+      }
+    }
+  }
 
   Future<void> _randevuAl() async {
     final secilenTarih = await showDatePicker(
@@ -53,6 +118,37 @@ class _SahaDetayEkraniState extends ConsumerState<SahaDetayEkrani> {
     try {
       final user = FirebaseAuth.instance.currentUser;
       if (user == null) throw Exception("Kullanıcı girişi bulunamadı!");
+
+      // ---- ÇAKIŞMA KONTROLÜ ----
+      // Her maç 1 saat sürer. Kurallar:
+      //   Örn. 12:00 seçildi → pencere [11:01, 12:59]
+      final baslangic = randevuTarihi.subtract(const Duration(minutes: 59));
+      final bitis = randevuTarihi.add(const Duration(minutes: 59));
+
+      final cakisanMaclar = await FirebaseFirestore.instance
+          .collection('maclar')
+          .where('halisahaId', isEqualTo: widget.saha.id)
+          .where(
+            'macTarihi',
+            isGreaterThanOrEqualTo: Timestamp.fromDate(baslangic),
+          )
+          .where('macTarihi', isLessThanOrEqualTo: Timestamp.fromDate(bitis))
+          .get();
+
+      if (cakisanMaclar.docs.isNotEmpty) {
+        if (mounted) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(
+              content: Text(
+                "Bu saha seçtiğiniz saat için zaten rezerve edilmiş! Lütfen farklı bir saat seçin.",
+              ),
+              backgroundColor: Colors.orange,
+              duration: Duration(seconds: 4),
+            ),
+          );
+        }
+        return;
+      }
 
       // MacModel oluştur (Denormalizasyon kurallarına uygun olarak saha bilgilerini içerir)
       final yeniMac = MacModel(
@@ -208,26 +304,63 @@ class _SahaDetayEkraniState extends ConsumerState<SahaDetayEkrani> {
           child: kullaniciAsync.when(
             data: (kullanici) {
               if (kullanici != null && kullanici.rol == 'Saha Sahibi') {
-                return Container(
-                  padding: const EdgeInsets.symmetric(vertical: 16),
-                  decoration: BoxDecoration(
-                    color: Colors.green.withOpacity(0.1),
-                    borderRadius: BorderRadius.circular(12),
-                    border: Border.all(color: Colors.green, width: 2),
-                  ),
-                  child: const Text(
-                    "Bu saha yönetiminize aittir",
-                    textAlign: TextAlign.center,
-                    style: TextStyle(
-                      fontSize: 18,
-                      fontWeight: FontWeight.bold,
-                      color: Colors.green,
+                return Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    // Bilgi bannerı
+                    Container(
+                      width: double.infinity,
+                      padding: const EdgeInsets.symmetric(vertical: 14),
+                      decoration: BoxDecoration(
+                        color: Colors.green.withOpacity(0.1),
+                        borderRadius: BorderRadius.circular(12),
+                        border: Border.all(color: Colors.green, width: 2),
+                      ),
+                      child: const Text(
+                        "Bu saha yönetiminize aittir",
+                        textAlign: TextAlign.center,
+                        style: TextStyle(
+                          fontSize: 16,
+                          fontWeight: FontWeight.bold,
+                          color: Colors.green,
+                        ),
+                      ),
                     ),
-                  ),
+                    const SizedBox(height: 10),
+                    SizedBox(
+                      width: double.infinity,
+                      child: ElevatedButton.icon(
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: Colors.red,
+                          foregroundColor: Colors.white,
+                          padding: const EdgeInsets.symmetric(vertical: 14),
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(12),
+                          ),
+                        ),
+                        onPressed: _sahaSilSuruyor
+                            ? null
+                            : () => _sahayiSilOnay(context, kullanici.id),
+                        icon: _sahaSilSuruyor
+                            ? const SizedBox(
+                                width: 18,
+                                height: 18,
+                                child: CircularProgressIndicator(
+                                  color: Colors.white,
+                                  strokeWidth: 2,
+                                ),
+                              )
+                            : const Icon(Icons.delete_forever),
+                        label: Text(
+                          _sahaSilSuruyor ? 'Siliniyor...' : 'Sahayı Sil',
+                          style: const TextStyle(fontSize: 16),
+                        ),
+                      ),
+                    ),
+                  ],
                 );
               }
 
-              // Normal Oyuncu Görünümü
               return ElevatedButton(
                 onPressed: _islemSuruyor ? null : _randevuAl,
                 style: ElevatedButton.styleFrom(
@@ -249,7 +382,10 @@ class _SahaDetayEkraniState extends ConsumerState<SahaDetayEkrani> {
                       )
                     : const Text(
                         "Tarih / Saat Seç ve Randevu Al",
-                        style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                        style: TextStyle(
+                          fontSize: 18,
+                          fontWeight: FontWeight.bold,
+                        ),
                       ),
               );
             },

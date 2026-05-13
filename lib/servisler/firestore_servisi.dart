@@ -60,4 +60,57 @@ class FirestoreServisi {
       rethrow;
     }
   }
+
+  Future<void> macSil({
+    required String macId,
+    required String siliciKullaniciId,
+    required String sahaAdi,
+  }) async {
+    try {
+      await _firestore.collection('maclar').doc(macId).delete();
+
+      await _islemLogla(
+        kullaniciId: siliciKullaniciId,
+        islemAdi: 'Randevu İptal Edildi',
+        detay: 'Silinen Maç ID: $macId, Saha: $sahaAdi',
+      );
+    } catch (e) {
+      print('Maç silinirken hata: $e');
+      rethrow;
+    }
+  }
+
+  /// Sahayı siler. Aynı zamanda o sahaya ait tüm aktif randevuları da toplu siler.
+  Future<void> sahaSil({
+    required String sahaId,
+    required String sahaAdi,
+    required String siliciKullaniciId,
+  }) async {
+    try {
+      final maclarSnapshot = await _firestore
+          .collection('maclar')
+          .where('halisahaId', isEqualTo: sahaId)
+          .get();
+
+      final batch = _firestore.batch();
+
+      batch.delete(_firestore.collection('halisahalar').doc(sahaId));
+
+      for (final mac in maclarSnapshot.docs) {
+        batch.delete(mac.reference);
+      }
+
+      await batch.commit();
+
+      await _islemLogla(
+        kullaniciId: siliciKullaniciId,
+        islemAdi: 'Halı Saha Silindi',
+        detay:
+            'Silinen Saha ID: $sahaId, Saha Adı: $sahaAdi, Silinen Randevu Sayısı: ${maclarSnapshot.docs.length}',
+      );
+    } catch (e) {
+      print('Saha silinirken hata: $e');
+      rethrow;
+    }
+  }
 }

@@ -3,12 +3,14 @@ class KullaniciModel {
   final String ad;
   final String email;
   final String rol;
+  final String? fotoUrl;
 
   KullaniciModel({
     required this.id,
     required this.ad,
     required this.email,
     required this.rol,
+    this.fotoUrl,
   });
 
   // Firebase'den gelen veriyi Map'e çevirme
@@ -18,6 +20,7 @@ class KullaniciModel {
       ad: data['ad'] ?? '',
       email: data['email'] ?? '',
       rol: data['rol'] ?? 'Oyuncu',
+      fotoUrl: data['fotoUrl'],
     );
   }
 
@@ -27,6 +30,7 @@ class KullaniciModel {
       'ad': ad,
       'email': email,
       'rol': rol,
+      if (fotoUrl != null) 'fotoUrl': fotoUrl,
     };
   }
 }

@@ -13,8 +13,6 @@ class _KayitEkraniState extends State<KayitEkrani> {
   final TextEditingController _adController = TextEditingController();
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _sifreController = TextEditingController();
-  
-  String _secilenRol = 'Oyuncu'; 
 
   final AuthServisi _authServisi = AuthServisi();
   bool _yukleniyor = false;
@@ -28,7 +26,6 @@ class _KayitEkraniState extends State<KayitEkrani> {
       _adController.text.trim(),
       _emailController.text.trim(),
       _sifreController.text.trim(),
-      _secilenRol,
     );
 
     setState(() {
@@ -38,12 +35,18 @@ class _KayitEkraniState extends State<KayitEkrani> {
     if (kullanici != null) {
       if (!mounted) return;
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text("Kayıt Başarılı! Log kaydı Firestore'a işlendi.")),
+        const SnackBar(
+          content: Text("Kayıt Başarılı! Log kaydı Firestore'a işlendi."),
+        ),
       );
     } else {
       if (!mounted) return;
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text("Kayıt başarısız oldu. E-posta formatını ve şifrenin en az 6 hane olmasını kontrol edin.")),
+        const SnackBar(
+          content: Text(
+            "Kayıt başarısız oldu. E-posta formatını ve şifrenin en az 6 hane olmasını kontrol edin.",
+          ),
+        ),
       );
     }
   }
@@ -98,23 +101,6 @@ class _KayitEkraniState extends State<KayitEkrani> {
                 ),
                 obscureText: true,
               ),
-              const SizedBox(height: 16),
-              DropdownButtonFormField<String>(
-                value: _secilenRol,
-                decoration: const InputDecoration(
-                  labelText: "Rolünüz",
-                  border: OutlineInputBorder(),
-                  prefixIcon: Icon(Icons.badge),
-                ),
-                items: ['Oyuncu', 'Saha Sahibi'].map((String rol) {
-                  return DropdownMenuItem(value: rol, child: Text(rol));
-                }).toList(),
-                onChanged: (yeniDeger) {
-                  setState(() {
-                    _secilenRol = yeniDeger!;
-                  });
-                },
-              ),
               const SizedBox(height: 24),
               _yukleniyor
                   ? const CircularProgressIndicator()
@@ -127,7 +113,10 @@ class _KayitEkraniState extends State<KayitEkrani> {
                           foregroundColor: Colors.white,
                         ),
                         onPressed: _kayitIslemi,
-                        child: const Text("Kayıt Ol", style: TextStyle(fontSize: 18)),
+                        child: const Text(
+                          "Kayıt Ol",
+                          style: TextStyle(fontSize: 18),
+                        ),
                       ),
                     ),
               const SizedBox(height: 16),
@@ -135,7 +124,9 @@ class _KayitEkraniState extends State<KayitEkrani> {
                 onPressed: () {
                   Navigator.pushReplacement(
                     context,
-                    MaterialPageRoute(builder: (context) => const GirisEkrani()),
+                    MaterialPageRoute(
+                      builder: (context) => const GirisEkrani(),
+                    ),
                   );
                 },
                 child: const Text("Hesabın var mı? Giriş Yap"),
