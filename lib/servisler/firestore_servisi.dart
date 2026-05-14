@@ -113,4 +113,36 @@ class FirestoreServisi {
       rethrow;
     }
   }
+
+  /// Kullanıcı profil bilgilerini günceller ve log atar.
+  Future<void> profilGuncelle({
+    required String kullaniciId,
+    required String ad,
+    String? soyisim,
+    int? yas,
+    String? mevki,
+  }) async {
+    try {
+      final Map<String, dynamic> guncellenecek = {
+        'ad': ad,
+        if (soyisim != null && soyisim.isNotEmpty) 'soyisim': soyisim,
+        if (yas != null) 'yas': yas,
+        if (mevki != null) 'mevki': mevki,
+      };
+
+      await _firestore
+          .collection('kullanicilar')
+          .doc(kullaniciId)
+          .update(guncellenecek);
+
+      await _islemLogla(
+        kullaniciId: kullaniciId,
+        islemAdi: 'Kullanıcı profili güncellendi',
+        detay: 'Ad: $ad, Mevki: ${mevki ?? '-'}',
+      );
+    } catch (e) {
+      print('Profil güncellenirken hata: $e');
+      rethrow;
+    }
+  }
 }

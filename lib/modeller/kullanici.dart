@@ -4,6 +4,9 @@ class KullaniciModel {
   final String email;
   final String rol;
   final String? fotoUrl;
+  final String? soyisim;
+  final int? yas;
+  final String? mevki;
 
   KullaniciModel({
     required this.id,
@@ -11,6 +14,9 @@ class KullaniciModel {
     required this.email,
     required this.rol,
     this.fotoUrl,
+    this.soyisim,
+    this.yas,
+    this.mevki,
   });
 
   // Firebase'den gelen veriyi Map'e çevirme
@@ -21,6 +27,9 @@ class KullaniciModel {
       email: data['email'] ?? '',
       rol: data['rol'] ?? 'Oyuncu',
       fotoUrl: data['fotoUrl'],
+      soyisim: data['soyisim'],
+      yas: data['yas'],
+      mevki: data['mevki'],
     );
   }
 
@@ -31,6 +40,9 @@ class KullaniciModel {
       'email': email,
       'rol': rol,
       if (fotoUrl != null) 'fotoUrl': fotoUrl,
+      if (soyisim != null) 'soyisim': soyisim,
+      if (yas != null) 'yas': yas,
+      if (mevki != null) 'mevki': mevki,
     };
   }
 }

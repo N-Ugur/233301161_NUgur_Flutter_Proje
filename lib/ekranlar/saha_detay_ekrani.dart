@@ -17,7 +17,6 @@ class SahaDetayEkrani extends ConsumerStatefulWidget {
 }
 
 class _SahaDetayEkraniState extends ConsumerState<SahaDetayEkrani> {
-  DateTime? _secilenTarihSaat;
   bool _islemSuruyor = false;
   bool _sahaSilSuruyor = false;
 
@@ -111,7 +110,6 @@ class _SahaDetayEkraniState extends ConsumerState<SahaDetayEkrani> {
     );
 
     setState(() {
-      _secilenTarihSaat = randevuTarihi;
       _islemSuruyor = true;
     });
 
