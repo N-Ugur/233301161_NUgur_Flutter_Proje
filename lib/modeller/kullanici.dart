@@ -7,6 +7,7 @@ class KullaniciModel {
   final String? soyisim;
   final int? yas;
   final String? mevki;
+  final String? fcmToken;
 
   KullaniciModel({
     required this.id,
@@ -17,6 +18,7 @@ class KullaniciModel {
     this.soyisim,
     this.yas,
     this.mevki,
+    this.fcmToken,
   });
 
   // Firebase'den gelen veriyi Map'e çevirme
@@ -30,6 +32,7 @@ class KullaniciModel {
       soyisim: data['soyisim'],
       yas: data['yas'],
       mevki: data['mevki'],
+      fcmToken: data['fcmToken'],
     );
   }
 
@@ -43,6 +46,7 @@ class KullaniciModel {
       if (soyisim != null) 'soyisim': soyisim,
       if (yas != null) 'yas': yas,
       if (mevki != null) 'mevki': mevki,
+      if (fcmToken != null) 'fcmToken': fcmToken,
     };
   }
 }

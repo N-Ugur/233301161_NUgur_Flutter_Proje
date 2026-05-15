@@ -6,6 +6,8 @@ import 'firebase_options.dart';
 import 'core/auth_gate.dart';
 import 'providers/tema_provider.dart';
 
+final GlobalKey<ScaffoldMessengerState> scaffoldMessengerKey = GlobalKey<ScaffoldMessengerState>();
+
 void main() async {
   // Flutter'ın çizim motoruyla Firebase'in haberleşmesi için gerekli komut
   WidgetsFlutterBinding.ensureInitialized();
@@ -27,6 +29,7 @@ class HalisahaUygulamasi extends ConsumerWidget {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       title: 'Maç Organizasyon',
+      scaffoldMessengerKey: scaffoldMessengerKey,
       themeMode: karanlikMod ? ThemeMode.dark : ThemeMode.light,
       theme: ThemeData(
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.green),

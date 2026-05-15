@@ -73,6 +73,8 @@ class _GirisEkraniState extends State<GirisEkrani> {
                   prefixIcon: Icon(Icons.email),
                 ),
                 keyboardType: TextInputType.emailAddress,
+                textInputAction: TextInputAction.next,
+                onSubmitted: (_) => FocusScope.of(context).nextFocus(),
               ),
               const SizedBox(height: 16),
               TextField(
@@ -83,6 +85,8 @@ class _GirisEkraniState extends State<GirisEkrani> {
                   prefixIcon: Icon(Icons.lock),
                 ),
                 obscureText: true,
+                textInputAction: TextInputAction.done,
+                onSubmitted: (_) => _girisIslemi(),
               ),
               const SizedBox(height: 24),
               _yukleniyor

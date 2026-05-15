@@ -88,12 +88,39 @@ class _ProfilEkraniState extends ConsumerState<ProfilEkrani> {
     }
   }
 
-  Future<void> _profilFotografiniDegistir(String kullaniciId) async {
-    setState(() => _fotografYukleniyor = true);
-    try {
-      final url =
-          await StorageServisi().fotografSec(klasor: 'profil_fotograflari');
-      if (url != null) {
+  Future<void> _profilFotografiniDegistirDialog(String kullaniciId) async {
+    final urlController = TextEditingController();
+    final url = await showDialog<String>(
+      context: context,
+      builder: (ctx) => AlertDialog(
+        title: const Text('Profil Fotoğrafı Değiştir'),
+        content: TextField(
+          controller: urlController,
+          decoration: const InputDecoration(
+            labelText: 'Fotoğraf Linki (https://...)',
+            border: OutlineInputBorder(),
+          ),
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(ctx, null),
+            child: const Text('İptal'),
+          ),
+          ElevatedButton(
+            style: ElevatedButton.styleFrom(
+              backgroundColor: Colors.green,
+              foregroundColor: Colors.white,
+            ),
+            onPressed: () => Navigator.pop(ctx, urlController.text.trim()),
+            child: const Text('Kaydet'),
+          ),
+        ],
+      ),
+    );
+
+    if (url != null && url.isNotEmpty) {
+      setState(() => _fotografYukleniyor = true);
+      try {
         await StorageServisi().profilFotografiniGuncelle(
           kullaniciId: kullaniciId,
           fotoUrl: url,
@@ -106,18 +133,18 @@ class _ProfilEkraniState extends ConsumerState<ProfilEkrani> {
             ),
           );
         }
+      } catch (e) {
+        if (mounted) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              content: Text('Hata oluştu: $e'),
+              backgroundColor: Colors.red,
+            ),
+          );
+        }
+      } finally {
+        if (mounted) setState(() => _fotografYukleniyor = false);
       }
-    } catch (e) {
-      if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text('Hata oluştu: $e'),
-            backgroundColor: Colors.red,
-          ),
-        );
-      }
-    } finally {
-      if (mounted) setState(() => _fotografYukleniyor = false);
     }
   }
 
@@ -180,7 +207,7 @@ class _ProfilEkraniState extends ConsumerState<ProfilEkrani> {
                       onTap: _fotografYukleniyor
                           ? null
                           : () =>
-                              _profilFotografiniDegistir(kullanici.id),
+                              _profilFotografiniDegistirDialog(kullanici.id),
                       child: Container(
                         decoration: BoxDecoration(
                           color: Colors.green,
@@ -198,7 +225,7 @@ class _ProfilEkraniState extends ConsumerState<ProfilEkrani> {
                 TextButton.icon(
                   onPressed: _fotografYukleniyor
                       ? null
-                      : () => _profilFotografiniDegistir(kullanici.id),
+                      : () => _profilFotografiniDegistirDialog(kullanici.id),
                   icon: const Icon(Icons.photo_library, size: 16),
                   label: const Text('Fotoğrafı Değiştir'),
                 ),

@@ -43,6 +43,27 @@ class FirestoreServisi {
     }
   }
 
+  Future<void> halisahaGuncelle(
+    HalisahaModel halisaha,
+    String islemYapanKullaniciId,
+  ) async {
+    try {
+      await _firestore
+          .collection('halisahalar')
+          .doc(halisaha.id)
+          .update(halisaha.toMap());
+
+      await _islemLogla(
+        kullaniciId: islemYapanKullaniciId,
+        islemAdi: 'Halı Saha Güncellendi',
+        detay: 'Güncellenen Saha ID: ${halisaha.id}, Saha Adı: ${halisaha.ad}',
+      );
+    } catch (e) {
+      print('Halı saha güncellenirken hata: $e');
+      rethrow;
+    }
+  }
+
   Future<void> macEkle(MacModel mac) async {
     try {
       DocumentReference docRef = await _firestore

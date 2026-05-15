@@ -80,6 +80,8 @@ class _KayitEkraniState extends State<KayitEkrani> {
                   border: OutlineInputBorder(),
                   prefixIcon: Icon(Icons.person),
                 ),
+                textInputAction: TextInputAction.next,
+                onSubmitted: (_) => FocusScope.of(context).nextFocus(),
               ),
               const SizedBox(height: 16),
               TextField(
@@ -90,6 +92,8 @@ class _KayitEkraniState extends State<KayitEkrani> {
                   prefixIcon: Icon(Icons.email),
                 ),
                 keyboardType: TextInputType.emailAddress,
+                textInputAction: TextInputAction.next,
+                onSubmitted: (_) => FocusScope.of(context).nextFocus(),
               ),
               const SizedBox(height: 16),
               TextField(
@@ -100,6 +104,8 @@ class _KayitEkraniState extends State<KayitEkrani> {
                   prefixIcon: Icon(Icons.lock),
                 ),
                 obscureText: true,
+                textInputAction: TextInputAction.done,
+                onSubmitted: (_) => _kayitIslemi(),
               ),
               const SizedBox(height: 24),
               _yukleniyor

@@ -151,6 +151,7 @@ class _MacListesi extends StatelessWidget {
       itemCount: maclar.length,
       itemBuilder: (context, index) {
         final mac = maclar[index];
+        final bool isGecmis = mac.macTarihi.isBefore(DateTime.now());
         final tarihFormati = DateFormat(
           'dd/MM/yyyy HH:mm',
         ).format(mac.macTarihi);
@@ -185,31 +186,51 @@ class _MacListesi extends StatelessWidget {
               children: [
                 const SizedBox(height: 4),
                 Text(mac.sahaIlce),
-                const SizedBox(height: 4),
                 Row(
                   children: [
-                    const Icon(
+                    Icon(
                       Icons.calendar_month,
                       size: 16,
-                      color: Colors.green,
+                      color: isGecmis ? Colors.grey : Colors.green,
                     ),
                     const SizedBox(width: 4),
                     Text(
                       tarihFormati,
-                      style: const TextStyle(
-                        color: Colors.green,
+                      style: TextStyle(
+                        color: isGecmis ? Colors.grey : Colors.green,
                         fontWeight: FontWeight.w600,
                       ),
                     ),
+                    if (isGecmis) ...[
+                      const SizedBox(width: 8),
+                      Container(
+                        padding: const EdgeInsets.symmetric(
+                            horizontal: 6, vertical: 2),
+                        decoration: BoxDecoration(
+                          color: Colors.blue.withOpacity(0.1),
+                          borderRadius: BorderRadius.circular(4),
+                          border: Border.all(color: Colors.blue, width: 0.5),
+                        ),
+                        child: const Text(
+                          "Tamamlandı",
+                          style: TextStyle(
+                              color: Colors.blue,
+                              fontSize: 10,
+                              fontWeight: FontWeight.bold),
+                        ),
+                      ),
+                    ],
                   ],
                 ),
               ],
             ),
-            trailing: IconButton(
-              icon: const Icon(Icons.delete_outline, color: Colors.red),
-              tooltip: 'Randevuyu İptal Et',
-              onPressed: () => _randevuSilOnay(context, mac),
-            ),
+            trailing: isGecmis
+                ? const Icon(Icons.check_circle, color: Colors.blue)
+                : IconButton(
+                    icon: const Icon(Icons.delete_outline, color: Colors.red),
+                    tooltip: 'Randevuyu İptal Et',
+                    onPressed: () => _randevuSilOnay(context, mac),
+                  ),
           ),
         );
       },

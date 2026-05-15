@@ -51,13 +51,28 @@ class StorageServisi {
 
       if (kIsWeb) {
         final bytes = await picked.readAsBytes();
-        task = ref.putData(bytes);
+        task = ref.putData(
+          bytes,
+          SettableMetadata(contentType: picked.mimeType ?? 'image/jpeg'),
+        );
       } else {
         task = ref.putFile(File(picked.path));
       }
 
-      final TaskSnapshot snapshot = await task;
-      final String downloadUrl = await snapshot.ref.getDownloadURL();
+      final TaskSnapshot snapshot = await task.timeout(
+        const Duration(seconds: 15),
+        onTimeout: () {
+          throw Exception(
+            "Yükleme zaman aşımına uğradı. Firebase Storage veya CORS ayarlarınızı kontrol edin.",
+          );
+        },
+      );
+      final String downloadUrl = await snapshot.ref.getDownloadURL().timeout(
+        const Duration(seconds: 15),
+        onTimeout: () {
+          throw Exception("Fotoğraf URL'i alınamadı. (CORS hatası olabilir)");
+        },
+      );
 
       // Log at
       final String islem = klasor == 'profil_fotograflari'

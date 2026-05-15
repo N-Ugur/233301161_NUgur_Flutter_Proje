@@ -6,6 +6,8 @@ import '../providers/kullanici_provider.dart';
 import '../modeller/halisaha_model.dart';
 import '../modeller/mac_model.dart';
 import '../servisler/firestore_servisi.dart';
+import 'saha_ekle_ekrani.dart';
+import 'sohbet_ekrani.dart';
 
 class SahaDetayEkrani extends ConsumerStatefulWidget {
   final HalisahaModel saha;
@@ -200,28 +202,31 @@ class _SahaDetayEkraniState extends ConsumerState<SahaDetayEkrani> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
-            // Saha Fotoğrafı
-            Hero(
-              tag: widget.saha.id,
-              child: Image.network(
-                widget.saha.fotoUrl.isNotEmpty
-                    ? widget.saha.fotoUrl
-                    : 'https://via.placeholder.com/600x400?text=Saha+Gorseli',
-                height: 250,
-                fit: BoxFit.cover,
-                errorBuilder: (context, error, stackTrace) {
-                  return Container(
-                    height: 250,
-                    color: Colors.grey[300],
-                    child: const Icon(
-                      Icons.image_not_supported,
-                      size: 80,
-                      color: Colors.grey,
-                    ),
-                  );
-                },
+            // Saha Fotoğrafları (Kaydırmalı)
+            SizedBox(
+              height: 250,
+              child: PageView(
+                children: [
+                  Hero(
+                    tag: widget.saha.id,
+                    child: _resimGoster(widget.saha.fotoUrl),
+                  ),
+                  if (widget.saha.ekFotograflar != null)
+                    ...widget.saha.ekFotograflar!.map((url) => _resimGoster(url)),
+                ],
               ),
             ),
+            if (widget.saha.ekFotograflar != null &&
+                widget.saha.ekFotograflar!.isNotEmpty)
+              Container(
+                alignment: Alignment.center,
+                padding: const EdgeInsets.symmetric(vertical: 6),
+                color: Colors.black87,
+                child: const Text(
+                  "Diğer fotoğraflar için sağa kaydırın 👉",
+                  style: TextStyle(color: Colors.white, fontSize: 12),
+                ),
+              ),
             Padding(
               padding: const EdgeInsets.all(16.0),
               child: Column(
@@ -329,6 +334,25 @@ class _SahaDetayEkraniState extends ConsumerState<SahaDetayEkrani> {
                       width: double.infinity,
                       child: ElevatedButton.icon(
                         style: ElevatedButton.styleFrom(
+                          backgroundColor: Colors.blue,
+                          foregroundColor: Colors.white,
+                          padding: const EdgeInsets.symmetric(vertical: 14),
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(12),
+                          ),
+                        ),
+                        onPressed: () {
+                           Navigator.push(context, MaterialPageRoute(builder: (context) => SahaEkleEkrani(duzenlenecekSaha: widget.saha)));
+                        },
+                        icon: const Icon(Icons.edit),
+                        label: const Text('Sahayı Düzenle', style: TextStyle(fontSize: 16)),
+                      ),
+                    ),
+                    const SizedBox(height: 10),
+                    SizedBox(
+                      width: double.infinity,
+                      child: ElevatedButton.icon(
+                        style: ElevatedButton.styleFrom(
                           backgroundColor: Colors.red,
                           foregroundColor: Colors.white,
                           padding: const EdgeInsets.symmetric(vertical: 14),
@@ -359,32 +383,75 @@ class _SahaDetayEkraniState extends ConsumerState<SahaDetayEkrani> {
                 );
               }
 
-              return ElevatedButton(
-                onPressed: _islemSuruyor ? null : _randevuAl,
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: Colors.green,
-                  foregroundColor: Colors.white,
-                  padding: const EdgeInsets.symmetric(vertical: 16),
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(12),
-                  ),
-                ),
-                child: _islemSuruyor
-                    ? const SizedBox(
-                        height: 20,
-                        width: 20,
-                        child: CircularProgressIndicator(
-                          color: Colors.white,
-                          strokeWidth: 2,
-                        ),
-                      )
-                    : const Text(
-                        "Tarih / Saat Seç ve Randevu Al",
-                        style: TextStyle(
-                          fontSize: 18,
-                          fontWeight: FontWeight.bold,
-                        ),
+              return Column(
+                mainAxisSize: MainAxisSize.min,
+                crossAxisAlignment: CrossAxisAlignment.stretch,
+                children: [
+                  ElevatedButton(
+                    onPressed: _islemSuruyor ? null : _randevuAl,
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: Colors.green,
+                      foregroundColor: Colors.white,
+                      padding: const EdgeInsets.symmetric(vertical: 16),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(12),
                       ),
+                    ),
+                    child: _islemSuruyor
+                        ? const SizedBox(
+                            height: 20,
+                            width: 20,
+                            child: CircularProgressIndicator(
+                              color: Colors.white,
+                              strokeWidth: 2,
+                            ),
+                          )
+                        : const Text(
+                            "Tarih / Saat Seç ve Randevu Al",
+                            style: TextStyle(
+                              fontSize: 18,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                  ),
+                  const SizedBox(height: 12),
+                  OutlinedButton.icon(
+                    onPressed: () async {
+                      if (widget.saha.ekleyenKullaniciId == null) return;
+                      
+                      // Saha sahibinin adını al
+                      final doc = await FirebaseFirestore.instance
+                          .collection('kullanicilar')
+                          .doc(widget.saha.ekleyenKullaniciId)
+                          .get();
+                      
+                      if (doc.exists && mounted) {
+                        final data = doc.data() as Map<String, dynamic>;
+                        final ad = data['ad'] ?? "Saha Sahibi";
+                        
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => SohbetEkrani(
+                              aliciId: widget.saha.ekleyenKullaniciId!,
+                              aliciAd: ad,
+                            ),
+                          ),
+                        );
+                      }
+                    },
+                    icon: const Icon(Icons.chat_bubble_outline),
+                    label: const Text("Saha Sahibiyle Sohbet Et"),
+                    style: OutlinedButton.styleFrom(
+                      padding: const EdgeInsets.symmetric(vertical: 14),
+                      side: const BorderSide(color: Colors.green),
+                      foregroundColor: Colors.green,
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(12),
+                      ),
+                    ),
+                  ),
+                ],
               );
             },
             loading: () => const SizedBox.shrink(),
@@ -392,6 +459,23 @@ class _SahaDetayEkraniState extends ConsumerState<SahaDetayEkrani> {
           ),
         ),
       ),
+    );
+  }
+
+  Widget _resimGoster(String url) {
+    return Image.network(
+      url.trim().isNotEmpty
+          ? url.trim()
+          : 'https://via.placeholder.com/600x400?text=Saha+Gorseli',
+      fit: BoxFit.cover,
+      errorBuilder: (context, error, stackTrace) {
+        return Container(
+          color: Colors.grey[300],
+          child: const Center(
+            child: Icon(Icons.image_not_supported, size: 80, color: Colors.grey),
+          ),
+        );
+      },
     );
   }
 }
