@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../providers/tema_provider.dart';
+import '../providers/ayarlar_provider.dart';
 
 class AyarlarEkrani extends ConsumerWidget {
   const AyarlarEkrani({super.key});
@@ -121,6 +122,7 @@ class AyarlarEkrani extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final karanlikMod = ref.watch(temaProvider);
+    final ayarlar = ref.watch(ayarlarProvider);
 
     return Scaffold(
       appBar: AppBar(title: const Text('Ayarlar'), centerTitle: true),
@@ -150,13 +152,20 @@ class AyarlarEkrani extends ConsumerWidget {
           ),
           SwitchListTile(
             title: const Text('Bildirimler'),
-            subtitle: const Text('Yaklaşan maç hatırlatıcıları'),
-            value: true,
+            subtitle: Text(ayarlar.bildirimlerAcik
+                ? 'Yaklaşan maç hatırlatıcıları açık'
+                : 'Bildirimler kapalı'),
+            value: ayarlar.bildirimlerAcik,
             onChanged: (bool value) {
-              // İleride gerçek bildirim entegrasyonu yapılabilir
+              ref.read(ayarlarProvider.notifier).bildirimleriDegistir(value);
             },
             activeColor: Colors.green,
-            secondary: const Icon(Icons.notifications),
+            secondary: Icon(
+              ayarlar.bildirimlerAcik
+                  ? Icons.notifications_active
+                  : Icons.notifications_off,
+              color: ayarlar.bildirimlerAcik ? Colors.green : Colors.grey,
+            ),
           ),
           const Divider(height: 40),
 
