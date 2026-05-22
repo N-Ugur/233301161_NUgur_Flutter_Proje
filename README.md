@@ -13,6 +13,9 @@ Uygulamayı test edebilmeniz için iki farklı rol için önceden oluşturulmuş
   - E-posta: `test@halisaha.com`
   - Şifre: `123456`
 
+  - E-posta: `test3@halisaha.com`
+  - Şifre: `123456`
+
 - **Saha Sahibi (Yönetici) Hesabı:**
   - E-posta: `test2@halisaha.com`
   - Şifre: `123456`
