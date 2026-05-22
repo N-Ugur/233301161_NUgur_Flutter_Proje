@@ -26,6 +26,8 @@ class _GirisEkraniState extends State<GirisEkrani> {
       _sifreController.text.trim(),
     );
 
+    if (!mounted) return;
+
     setState(() {
       _yukleniyor = false;
     });

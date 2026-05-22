@@ -28,6 +28,8 @@ class _KayitEkraniState extends State<KayitEkrani> {
       _sifreController.text.trim(),
     );
 
+    if (!mounted) return;
+
     setState(() {
       _yukleniyor = false;
     });
