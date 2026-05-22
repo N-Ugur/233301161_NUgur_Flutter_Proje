@@ -34,21 +34,23 @@ Aşağıda uygulamanın temel akışını gösteren ekran görüntüleri bulunma
 
 1. **Giriş ve Kayıt Ekranı:**
 ![Giriş Ekranı](screenshots/ekran1.png)
+![Kayıt Ekranı](screenshots/ekran8.png)
 
 2. **Ana Sayfa (Keşfet) Ekranı:**
 ![Ana Sayfa](screenshots/ekran2.png)
 
 3. **Saha Detay ve Rezervasyon Ekranı:**
-![Detay Ekranı](screenshots/ekran3.png)
+![Detay Ekranı](screenshots/ekran6.png)
+![Rezervasyon Ekranı](screenshots/ekran7.png)
 
 4. **Maçlarım Ekranı:**
-![Maçlarım](screenshots/ekran4.png)
+![Maçlarım](screenshots/ekran9.png)
 
 5. **Mesajlar / Sohbet Ekranı:**
-![Sohbet](screenshots/ekran5.png)
+![Mesajlar](screenshots/ekran3.png)
 
 6. **Profil Ekranı:**
-![Profil](screenshots/ekran6.png)
+![Profil](screenshots/ekran4.png)
 
 7. **Ayarlar ve Tema Ekranı:**
-![Ayarlar](screenshots/ekran7.png)
+![Ayarlar](screenshots/ekran5.png)
